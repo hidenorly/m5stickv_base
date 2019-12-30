@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 #include <bsp.h>
-#include "uart.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "board_setup.h"
 #include "lcd.h"
 #include "pal_gpio.h"
+#include "pal_led.h"
 
 void hello_core(void)
 {
@@ -41,11 +41,20 @@ void task_func1(void* arg)
 {
     while(1)
     {
-        static int lastBtnStatus = -1;
-        int curStatus = digitalRead(BUTTON_A);
-        if( lastBtnStatus != curStatus){
-            lastBtnStatus = curStatus;
-            printf("Button A: %s\r\n", curStatus ? "Released" : "Pushed");
+        static int lastBtnStatus[2] = {-1, -1};
+        int curStatus[2];
+        for(int i=0; i<2; i++){
+            curStatus[i] = digitalRead((i==0) ? BUTTON_A : BUTTON_B);
+            if( lastBtnStatus[i] != curStatus[i]){
+                lastBtnStatus[i] = curStatus[i];
+                if(curStatus[i] == LOW){
+                    if( i == 0){
+                        rgbw_led_setduty(0, 0, 0, 255);
+                    } else {
+                        rgbw_led_setduty(128, 128, 128, 0);
+                    }
+                }
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(100));
     }
@@ -55,11 +64,14 @@ void task_func2(void* arg)
 {
     while(1)
     {
-        static int lastBtnStatus = -1;
-        int curStatus = digitalRead(BUTTON_B);
-        if( lastBtnStatus != curStatus){
-            lastBtnStatus = curStatus;
-            printf("Button B: %s\r\n", curStatus ? "Released" : "Pushed");
+        static int lastBtnStatus[2] = {-1, -1};
+        int curStatus[2];
+        for(int i=0; i<2; i++){
+            curStatus[i] = digitalRead((i==0) ? BUTTON_A : BUTTON_B);
+            if( lastBtnStatus[i] != curStatus[i]){
+                lastBtnStatus[i] = curStatus[i];
+                printf("Button %s: %s\r\n", (i==0) ? "A" : "B", curStatus[i] ? "Released" : "Pushed");
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(100));
     }
@@ -75,6 +87,9 @@ int main(void)
 
     // enable 2nd core (=core1)
     register_core1(core_task_scheduler_enable, NULL);
+
+    // LED
+    rgbw_led_init();
 
     xTaskCreateAtProcessor(0, task_func1, "1", 256, NULL, tskIDLE_PRIORITY+1, NULL );
     xTaskCreateAtProcessor(1, task_func2, "2", 256, NULL, tskIDLE_PRIORITY+1, NULL );

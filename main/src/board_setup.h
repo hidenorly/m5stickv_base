@@ -19,6 +19,10 @@
 
 #define BUTTON_A    36
 #define BUTTON_B    37
+#define LED_W		3
+#define LED_R		4
+#define LED_G		5
+#define LED_B		6
 
 void board_setup(void);
 

@@ -14,21 +14,13 @@
  limitations under the License.
 */
 
-#ifndef __PAL_GPIO_H__
-#define __PAL_GPIO_H__
+#ifndef BOOL
+#define BOOL int
+#endif
 
-#include <bsp.h>
-
-#define HIGH 0x1
-#define LOW  0x0
-
-#define INPUT 0x0
-#define OUTPUT 0x1
-#define INPUT_PULLUP 0x2
-#define INPUT_PULLDOWN 0x3
-
-void pinMode(uint8_t pin, uint8_t mode);
-void digitalWrite(uint8_t pin, uint8_t val);
-int digitalRead(uint8_t pin);
-
-#endif // __PAL_GPIO_H__
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef TRUE
+#define TRUE (!FALSE)
+#endif

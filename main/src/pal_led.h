@@ -14,21 +14,18 @@
  limitations under the License.
 */
 
-#ifndef __PAL_GPIO_H__
-#define __PAL_GPIO_H__
+#ifndef __PAL_LED_H__
+#define __PAL_LED_H__
 
 #include <bsp.h>
 
-#define HIGH 0x1
-#define LOW  0x0
+#define LED_W		7
+#define LED_R		6
+#define LED_G		9
+#define LED_B		8
 
-#define INPUT 0x0
-#define OUTPUT 0x1
-#define INPUT_PULLUP 0x2
-#define INPUT_PULLDOWN 0x3
 
-void pinMode(uint8_t pin, uint8_t mode);
-void digitalWrite(uint8_t pin, uint8_t val);
-int digitalRead(uint8_t pin);
+void rgbw_led_init(void);
+void rgbw_led_setduty(uint8_t r, uint8_t g, uint8_t b, uint8_t w);
 
-#endif // __PAL_GPIO_H__
+#endif // __PAL_LED_H__

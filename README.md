@@ -8,6 +8,12 @@ Based on the following:
 * https://github.com/hidenorly/hello_world_m5stickv
 
 
+Current supported features:
+* gpio
+* LED (with Software PWM)
+* Debug UART
+* LCD
+
 # Get dependent modules
 
 ## Get MaixPy

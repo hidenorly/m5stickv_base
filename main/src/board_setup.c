@@ -22,6 +22,8 @@
 #include "fpioa.h"
 #include "gpiohs.h"
 #include "pal_gpio.h"
+#include "pal_led.h"
+
 
 void setup_lcd(uint16_t fillColor, lcd_dir_t lcdDirection)
 {
@@ -42,7 +44,6 @@ void setup_buttons(void)
     pinMode(BUTTON_A, INPUT_PULLUP);
     pinMode(BUTTON_B, INPUT_PULLUP);
 }
-
 
 void board_setup(void)
 {
