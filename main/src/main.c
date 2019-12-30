@@ -17,7 +17,8 @@
 #include "uart.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "m5stick.h"
+#include "boards.h"
+#include "lcd.h"
 
 void hello_core(void)
 {
@@ -50,14 +51,35 @@ void task_func2(void* arg)
     }
 }
 
-int main(void)
+void setup(void)
 {
     sysctl_pll_set_freq(SYSCTL_PLL0, 800000000);
-    m5stick_init();
+    boards_init();
 
     // UART1 with baud rate 115200 , 8 data bits , 1 stop bit , no parity
     uart_init(UART_DEVICE_1);
     uart_config(UART_DEVICE_1, 115200, UART_BITWIDTH_8BIT, UART_STOP_1, UART_PARITY_NONE);
+}
+
+void setup_lcd(uint16_t fillColor, lcd_dir_t lcdDirection)
+{
+    fpioa_set_function(21, FUNC_GPIOHS0 + RST_GPIONUM);
+    fpioa_set_function(20, FUNC_GPIOHS0 + DCX_GPIONUM);
+    fpioa_set_function(22, FUNC_SPI0_SS0+LCD_SPI_SLAVE_SELECT);
+    fpioa_set_function(19, FUNC_SPI0_SCLK);
+    fpioa_set_function(18, FUNC_SPI0_D0);
+
+    lcd_init(CONFIG_LCD_DEFAULT_FREQ, false, 52, 40, 40, 52, true, CONFIG_LCD_DEFAULT_WIDTH, CONFIG_LCD_DEFAULT_HEIGHT);
+    lcd_set_direction(lcdDirection);
+    lcd_clear(fillColor);
+}
+
+int main(void)
+{
+    setup();
+
+    setup_lcd(BLACK, DIR_YX_LRUD);
+    lcd_draw_string(0,0, "hello world", WHITE);
 
     // enable 2nd core (=core1)
     register_core1(core_task_scheduler_enable, NULL);
