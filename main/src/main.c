@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 #include <bsp.h>
-#include <sysctl.h>
 #include "uart.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "boards.h"
+#include "board_setup.h"
 #include "lcd.h"
+#include "pal_gpio.h"
 
 void hello_core(void)
 {
@@ -30,15 +30,24 @@ int core_task_scheduler_enable(void *ctx)
 {
     hello_core();
     vTaskStartScheduler();
-    while(1);
+    while(1){
+        asm ("wfi");
+    }
+
+    return 0;
 }
 
 void task_func1(void* arg)
 {
     while(1)
     {
-        printf("task1\r\n");
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        static int lastBtnStatus = -1;
+        int curStatus = digitalRead(BUTTON_A);
+        if( lastBtnStatus != curStatus){
+            lastBtnStatus = curStatus;
+            printf("Button A: %s\r\n", curStatus ? "Released" : "Pushed");
+        }
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
@@ -46,39 +55,22 @@ void task_func2(void* arg)
 {
     while(1)
     {
-        printf("task2\r\n");
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        static int lastBtnStatus = -1;
+        int curStatus = digitalRead(BUTTON_B);
+        if( lastBtnStatus != curStatus){
+            lastBtnStatus = curStatus;
+            printf("Button B: %s\r\n", curStatus ? "Released" : "Pushed");
+        }
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
-void setup(void)
-{
-    sysctl_pll_set_freq(SYSCTL_PLL0, 800000000);
-    boards_init();
-
-    // UART1 with baud rate 115200 , 8 data bits , 1 stop bit , no parity
-    uart_init(UART_DEVICE_1);
-    uart_config(UART_DEVICE_1, 115200, UART_BITWIDTH_8BIT, UART_STOP_1, UART_PARITY_NONE);
-}
-
-void setup_lcd(uint16_t fillColor, lcd_dir_t lcdDirection)
-{
-    fpioa_set_function(21, FUNC_GPIOHS0 + RST_GPIONUM);
-    fpioa_set_function(20, FUNC_GPIOHS0 + DCX_GPIONUM);
-    fpioa_set_function(22, FUNC_SPI0_SS0+LCD_SPI_SLAVE_SELECT);
-    fpioa_set_function(19, FUNC_SPI0_SCLK);
-    fpioa_set_function(18, FUNC_SPI0_D0);
-
-    lcd_init(CONFIG_LCD_DEFAULT_FREQ, false, 52, 40, 40, 52, true, CONFIG_LCD_DEFAULT_WIDTH, CONFIG_LCD_DEFAULT_HEIGHT);
-    lcd_set_direction(lcdDirection);
-    lcd_clear(fillColor);
-}
 
 int main(void)
 {
-    setup();
+    board_setup();
 
-    setup_lcd(BLACK, DIR_YX_LRUD);
+    // LCD
     lcd_draw_string(0,0, "hello world", WHITE);
 
     // enable 2nd core (=core1)

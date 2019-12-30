@@ -1,8 +1,12 @@
-# m5stickv_hello_world
+# m5stickv_base
 
-Based on https://github.com/sipeed/MaixPy/tree/master/projects/hello_world and https://github.com/sipeed/MaixPy/tree/master/projects/maixpy_m5stickv
+This is C language based embedded application framework for M5StickV.
 
-Hello World for M5StickV.
+Based on the following:
+* https://github.com/sipeed/MaixPy/tree/master/projects/hello_world
+* https://github.com/sipeed/MaixPy/tree/master/projects/maixpy_m5stickv
+* https://github.com/hidenorly/hello_world_m5stickv
+
 
 # Get dependent modules
 
@@ -38,7 +42,7 @@ $ cp /Users/xxx/work/hello_world_m5stickv /Users/xxx/work/MaixPy/projects
 # How to build
 
 ```
-$ cd MaixPy/projects/hello_world_m5stickv
+$ cd MaixPy/projects/m5stickv_base
 $ python3 project.py clean_conf
 -- SDK_PATH:/Users/xxxx/work/m5v/MaixPy
 maixpy

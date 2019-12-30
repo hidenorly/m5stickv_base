@@ -5,9 +5,7 @@
 ###############################################
 
 ############ Add source files #################
-list(APPEND ADD_SRCS  "src/main.c"
-    )
-# aux_source_directory(src ADD_SRCS)
+aux_source_directory(src ADD_SRCS)
 # list(REMOVE_ITEM COMPONENT_SRCS "src/test2.c")
 ###############################################
 

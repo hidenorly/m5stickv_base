@@ -26,7 +26,7 @@ include(${SDK_PATH}/tools/cmake/compile.cmake)
 
 
 # Project Name
-project(hello_world)
+project(m5stickv_base)
 
 
 
