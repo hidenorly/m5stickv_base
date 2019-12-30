@@ -17,6 +17,7 @@
 #include "uart.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "m5stick.h"
 
 void hello_core(void)
 {
@@ -52,6 +53,7 @@ void task_func2(void* arg)
 int main(void)
 {
     sysctl_pll_set_freq(SYSCTL_PLL0, 800000000);
+    m5stick_init();
 
     // UART1 with baud rate 115200 , 8 data bits , 1 stop bit , no parity
     uart_init(UART_DEVICE_1);

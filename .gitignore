@@ -31,5 +31,9 @@
 *.out
 *.app
 
+# For MaixPy
+.flash.conf.json
+build/*
+
 # For Mac
 .DS_Store

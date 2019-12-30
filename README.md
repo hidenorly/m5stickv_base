@@ -32,7 +32,7 @@ $ pip3 install -r requirements.txt
 ## Copy to project folder
 
 ```
-$ ln -s /Users/xxx/work/hello_world_m5stickv /Users/xxx/work/MaixPy/projects
+$ cp /Users/xxx/work/hello_world_m5stickv /Users/xxx/work/MaixPy/projects
 ```
 
 # How to build
@@ -43,7 +43,8 @@ $ python3 project.py clean_conf
 -- SDK_PATH:/Users/xxxx/work/m5v/MaixPy
 maixpy
 clean now
-$ python3 makemenuconfig
+$ python3 project.py menuconfig
+(Just Save & Quit)
 $ python3 project.py build
 $ python3 project.py -B goE -p /dev/cu.usbserial-xxxx -b 1500000 flash
 ```
