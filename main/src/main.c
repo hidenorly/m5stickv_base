@@ -57,7 +57,7 @@ void task_func1(void* arg)
                 lastBtnStatus[i] = curStatus[i];
                 if(curStatus[i] == LOW){
                     if( i == 0){
-                        rgbw_led_setduty(0, 0, 0, 255);
+                        rgbw_led_setduty(128, 0, 0, 0);
                     } else {
                         rgbw_led_setduty(128, 128, 128, 0);
                     }
