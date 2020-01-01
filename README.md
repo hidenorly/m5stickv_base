@@ -42,7 +42,7 @@ $ pip3 install -r requirements.txt
 ## Copy to project folder
 
 ```
-$ cp /Users/xxx/work/hello_world_m5stickv /Users/xxx/work/MaixPy/projects
+$ cp /Users/xxx/work/m5stickv_base /Users/xxx/work/MaixPy/projects
 ```
 
 # How to build
@@ -50,7 +50,7 @@ $ cp /Users/xxx/work/hello_world_m5stickv /Users/xxx/work/MaixPy/projects
 ```
 $ cd MaixPy/projects/m5stickv_base
 $ python3 project.py clean_conf
--- SDK_PATH:/Users/xxxx/work/m5v/MaixPy
+-- SDK_PATH:/Users/xxxx/work/MaixPy
 maixpy
 clean now
 $ python3 project.py menuconfig
