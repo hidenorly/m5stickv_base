@@ -24,6 +24,15 @@
 #define LED_G		5
 #define LED_B		6
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 void board_setup(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 
 #endif // __BOARD_SETUP_H__

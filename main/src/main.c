@@ -16,7 +16,15 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "board_setup.h"
-#include "lcd.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+    #include "lcd.h"
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 #include "pal_gpio.h"
 #include "pal_led.h"
 

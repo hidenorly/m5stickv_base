@@ -18,7 +18,14 @@
 #include "board_setup.h"
 #include "boards.h"
 #include <sysctl.h>
-#include "lcd.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+    #include "lcd.h"
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 #include "fpioa.h"
 #include "gpiohs.h"
 #include "pal_gpio.h"

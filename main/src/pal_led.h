@@ -19,13 +19,29 @@
 
 #include <bsp.h>
 
-#define LED_W		7
-#define LED_R		6
-#define LED_G		9
-#define LED_B		8
+#ifndef LED_W
+	#define LED_W		7
+#endif // LED_W
+#ifndef LED_R
+	#define LED_R		6
+#endif // LED_R
+#ifndef LED_G
+	#define LED_G		9
+#endif // LED_G
+#ifndef LED_B
+	#define LED_B		8
+#endif // LED_B
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 void rgbw_led_init(void);
 void rgbw_led_setduty(uint8_t r, uint8_t g, uint8_t b, uint8_t w);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 
 #endif // __PAL_LED_H__

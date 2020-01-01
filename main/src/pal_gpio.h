@@ -27,8 +27,16 @@
 #define INPUT_PULLUP 0x2
 #define INPUT_PULLDOWN 0x3
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 void pinMode(uint8_t pin, uint8_t mode);
 void digitalWrite(uint8_t pin, uint8_t val);
 int digitalRead(uint8_t pin);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif // __PAL_GPIO_H__
