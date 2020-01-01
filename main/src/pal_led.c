@@ -30,23 +30,26 @@ static volatile uint8_t mLedPins[4] = {LED_R, LED_G, LED_B, LED_W};
 
 void task_led(void* arg)
 {
-    while(TRUE)
-    {
-    	int pin = ((int)arg) & 3; // mask 0b11 for <4
-    	if(mDuties[pin]==0){
-	    	digitalWrite(mLedPins[pin], HIGH);
-	        vTaskDelay(pdMS_TO_TICKS(DUTY_CYCLE));
-    	} else {
-	    	digitalWrite(mLedPins[pin], LOW);
-	    	int delay = ((float)DUTY_CYCLE * (float)mDuties[pin] / 255.0f);
-	        vTaskDelay(pdMS_TO_TICKS((int)delay));
-	    	delay = DUTY_CYCLE - delay;
-	    	if(delay>0){
-		    	digitalWrite(mLedPins[pin], HIGH);
-		        vTaskDelay(pdMS_TO_TICKS(delay));
-		    }
-    	}
-    }
+	while(TRUE)
+	{
+#ifdef __cplusplus
+		long arg = reinterpret_cast<long>(arg);
+#endif //__cplusplus
+		int pin = (int)arg & 3; // mask 0b11 for <4
+		if(mDuties[pin]==0){
+			digitalWrite(mLedPins[pin], HIGH);
+			vTaskDelay(pdMS_TO_TICKS(DUTY_CYCLE));
+		} else {
+			digitalWrite(mLedPins[pin], LOW);
+			int delay = ((float)DUTY_CYCLE * (float)mDuties[pin] / 255.0f);
+			vTaskDelay(pdMS_TO_TICKS((int)delay));
+			delay = DUTY_CYCLE - delay;
+			if(delay>0){
+				digitalWrite(mLedPins[pin], HIGH);
+				vTaskDelay(pdMS_TO_TICKS(delay));
+			}
+		}
+	}
 }
 
 void rgbw_led_setduty(uint8_t r, uint8_t g, uint8_t b, uint8_t w)
