@@ -27,6 +27,7 @@ extern "C" {
 
 #include "pal_gpio.h"
 #include "pal_led.h"
+#include "pal_mpu6886.h"
 
 void hello_core(void)
 {
@@ -68,19 +69,32 @@ void task_func1(void* arg)
     }
 }
 
+
 void task_func2(void* arg)
 {
+    float accX = 0.0F;
+    float accY = 0.0F;
+    float accZ = 0.0F;
+     
+    float gyroX = 0.0F;
+    float gyroY = 0.0F;
+    float gyroZ = 0.0F;
+     
+    float pitch = 0.0F;
+    float roll  = 0.0F;
+    float yaw   = 0.0F;
+
+    IMU_Init();
+
     while(1)
     {
-        static int lastBtnStatus[2] = {-1, -1};
-        int curStatus[2];
-        for(int i=0; i<2; i++){
-            curStatus[i] = digitalRead((i==0) ? BUTTON_A : BUTTON_B);
-            if( lastBtnStatus[i] != curStatus[i]){
-                lastBtnStatus[i] = curStatus[i];
-                printf("Button %s: %s\r\n", (i==0) ? "A" : "B", curStatus[i] ? "Released" : "Pushed");
-            }
-        }
+        IMU_getAccelData(&accX, &accY, &accZ);
+        IMU_getGyroData(&gyroX, &gyroY, &gyroZ);
+        IMU_getAhrsData(&pitch, &roll, &yaw);
+
+        printf("a:%5.2f,%5.2f,%5.2f\r\n", accX, accY, accZ);
+        printf("g:%6.2f,%6.2f,%6.2f\r\n", gyroX, gyroY, gyroZ);
+        printf("h:%5.2f,%5.2f,%5.2f\r\n", pitch, roll, yaw);
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 }

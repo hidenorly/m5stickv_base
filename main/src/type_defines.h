@@ -24,3 +24,7 @@
 #ifndef TRUE
 #define TRUE (!FALSE)
 #endif
+
+#ifndef delay
+#define delay(...)	vTaskDelay(pdMS_TO_TICKS(__VA_ARGS__))
+#endif
