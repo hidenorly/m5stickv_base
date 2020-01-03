@@ -59,7 +59,7 @@ uint8_t MPU6886_i2c_recv_byte(uint8_t cmd)
 }
 
 
-int IMU_Init(void)
+int MPU6886_Init(void)
 {
 	// setup GPIOs for I2C & the I2C
 	fpioa_set_function(MPU6886_I2C_PIN_SCL, FUNC_I2C0_SCLK);
@@ -68,6 +68,7 @@ int IMU_Init(void)
 
 	if( MPU6886_i2c_recv_byte(MPU6886_WHOAMI) != MPU6886_WHOAMI_VALUE ){
 		maix_i2c_deinit(MPU6886_I2C_BUS);
+		printf("This device doesn't have MPU6886.\r\n");
 		// WHO AM I's register (117) will return 0x19. Otherwise, it's not MPU6886.
 		return -1;
 	}
@@ -127,7 +128,7 @@ int IMU_Init(void)
 	return 0;
 }
 
-void IMU_getGyroData(float* gyroX, float* gyroY, float* gyroZ)
+void MPU6886_getGyroData(float* gyroX, float* gyroY, float* gyroZ)
 {
 	uint8_t buf[6];
 	MPU6886_i2c_recv_data(MPU6886_ACCEL_XOUT_H, 6, buf);
@@ -137,7 +138,7 @@ void IMU_getGyroData(float* gyroX, float* gyroY, float* gyroZ)
 	*gyroZ=(float)(((int16_t)buf[4]<<8) | buf[5]) * g_gyroK;
 }
 
-void IMU_getAccelData(float* accelX, float* accelY, float* accelZ)
+void MPU6886_getAccelData(float* accelX, float* accelY, float* accelZ)
 {
 	uint8_t buf[6];
 	MPU6886_i2c_recv_data(MPU6886_GYRO_XOUT_H, 6, buf);
@@ -147,7 +148,7 @@ void IMU_getAccelData(float* accelX, float* accelY, float* accelZ)
 	*accelZ=(float)(((int16_t)buf[4]<<8) | buf[5]) * g_accelK;
 }
 
-void IMU_getAhrsData(float* pitch, float* roll, float* yaw)
+void MPU6886_getAhrsData(float* pitch, float* roll, float* yaw)
 {
 
 }

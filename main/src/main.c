@@ -27,7 +27,7 @@ extern "C" {
 
 #include "pal_gpio.h"
 #include "pal_led.h"
-#include "pal_mpu6886.h"
+#include "IMU.h"
 
 void hello_core(void)
 {
@@ -72,17 +72,17 @@ void task_func1(void* arg)
 
 void task_func2(void* arg)
 {
-    float accX = 0.0F;
-    float accY = 0.0F;
-    float accZ = 0.0F;
+    float accX = 0.0f;
+    float accY = 0.0f;
+    float accZ = 0.0f;
      
-    float gyroX = 0.0F;
-    float gyroY = 0.0F;
-    float gyroZ = 0.0F;
+    float gyroX = 0.0f;
+    float gyroY = 0.0f;
+    float gyroZ = 0.0f;
      
-    float pitch = 0.0F;
-    float roll  = 0.0F;
-    float yaw   = 0.0F;
+    float pitch = 0.0f;
+    float roll  = 0.0f;
+    float yaw   = 0.0f;
 
     IMU_Init();
 

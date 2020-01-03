@@ -23,14 +23,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-enum IMU_ASCALE {
+enum MPU6886_ASCALE {
 	AFS_2G = 0,
 	AFS_4G,
 	AFS_8G,
 	AFS_16G
 };
 
-enum IMU_GSCALE {
+enum MPU6886_GSCALE {
 	GFS_250DPS = 0,
 	GFS_500DPS,
 	GFS_1000DPS,
@@ -38,10 +38,10 @@ enum IMU_GSCALE {
 };
 
 
-int IMU_Init(void);
-void IMU_getGyroData(float* gyroX, float* gyroY, float* gyroZ);
-void IMU_getAccelData(float* accelX, float* accelY, float* accelZ);
-void IMU_getAhrsData(float* pitch, float* roll, float* yaw);
+int MPU6886_Init(void);
+void MPU6886_getGyroData(float* gyroX, float* gyroY, float* gyroZ);
+void MPU6886_getAccelData(float* accelX, float* accelY, float* accelZ);
+void MPU6886_getAhrsData(float* pitch, float* roll, float* yaw);
 
 // board config
 #define MPU6886_I2C_BUS		I2C_DEVICE_0    // iic0
@@ -50,8 +50,8 @@ void IMU_getAhrsData(float* pitch, float* roll, float* yaw);
 #define MPU6886_I2C_SLA		0x68
 
 #ifdef MPU6886_IMPL
-static float g_accelK = 8.0/32768.0;
-static float g_gyroK = 2000.0/32768.0;
+static float g_accelK = 8.0f/32768.0f;
+static float g_gyroK = 2000.0f/32768.0f;
 int MPU6886_i2c_send_data(uint8_t cmd, size_t send_buf_len, const uint8_t *send_buf);
 int MPU6886_i2c_send_byte(uint8_t cmd, const uint8_t sendData);
 
@@ -97,16 +97,8 @@ uint8_t MPU6886_i2c_recv_byte(uint8_t cmd);
 #define MPU6886_INT_PIN_CFG       0x37
 #define MPU6886_INT_PIN_CFG_VAL	  0x20
 
-
-
 #define MPU6886_TEMP_OUT_H        0x41
 #define MPU6886_TEMP_OUT_L        0x42
-
-
-
-#define RtA     57.324841
-#define AtR    	0.0174533	
-#define Gyro_Gr	0.0010653
 #endif // MPU6886_IMPL
 
 #ifdef __cplusplus
