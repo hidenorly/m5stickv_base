@@ -1,5 +1,5 @@
 /* 
- Copyright (C) 2019 hidenorly
+ Copyright (C) 2019, 2020 hidenorly
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,6 +33,13 @@ void board_setup(void);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+
+#define FREQ_PLL0_DEFAULT    832000000UL
+#define FREQ_PLL1_DEFAULT    400000000UL
+#define FREQ_PLL2_DEFAULT    45158400UL
+#define FREQ_CPU_MAX     600000000UL
+#define FREQ_CPU_DEFAULT (FREQ_PLL0_DEFAULT/2)
 
 
 #endif // __BOARD_SETUP_H__

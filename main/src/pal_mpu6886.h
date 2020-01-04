@@ -23,21 +23,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-enum MPU6886_ASCALE {
-	AFS_2G = 0,
-	AFS_4G,
-	AFS_8G,
-	AFS_16G
-};
-
-enum MPU6886_GSCALE {
-	GFS_250DPS = 0,
-	GFS_500DPS,
-	GFS_1000DPS,
-	GFS_2000DPS
-};
-
-
 int MPU6886_Init(void);
 void MPU6886_getGyroData(float* gyroX, float* gyroY, float* gyroZ);
 void MPU6886_getAccelData(float* accelX, float* accelY, float* accelZ);
@@ -45,6 +30,7 @@ void MPU6886_getAhrsData(float* pitch, float* roll, float* yaw);
 
 // board config
 #define MPU6886_I2C_BUS		I2C_DEVICE_0    // iic0
+#define MPU6886_I2C_PIN_INT	23
 #define MPU6886_I2C_PIN_SCL	28
 #define MPU6886_I2C_PIN_SDA	29
 #define MPU6886_I2C_SLA		0x68

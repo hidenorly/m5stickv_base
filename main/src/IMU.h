@@ -23,6 +23,20 @@
 extern "C" {
 #endif /* __cplusplus */
 
+enum IMU_ASCALE {
+	AFS_2G = 0,
+	AFS_4G,
+	AFS_8G,
+	AFS_16G
+};
+
+enum IMU_GSCALE {
+	GFS_250DPS = 0,
+	GFS_500DPS,
+	GFS_1000DPS,
+	GFS_2000DPS
+};
+
 int IMU_Init(void);
 void IMU_getGyroData(float* gyroX, float* gyroY, float* gyroZ);
 void IMU_getAccelData(float* accelX, float* accelY, float* accelZ);

@@ -15,6 +15,7 @@
 */
 
 #include "pal_mpu6886.h"
+#include "pal_sh200q.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,7 +34,10 @@ int IMU_Init(void)
 	int ret = -1;
 	if(!(ret=MPU6886_Init())){
 		IMU_TYPE = IMU_MPU6886;
+	} else if(!(ret=SH200Q_Init())){
+		IMU_TYPE = IMU_SH200Q;
 	}
+
 	return ret;
 }
 
@@ -44,6 +48,8 @@ void IMU_getGyroData(float* gyroX, float* gyroY, float* gyroZ)
 			MPU6886_getGyroData(gyroX, gyroY, gyroZ);
 			break;
 		case IMU_SH200Q:
+			SH200Q_getGyroData(gyroX, gyroY, gyroZ);
+			break;
 		default:;
 	}
 }
@@ -55,6 +61,8 @@ void IMU_getAccelData(float* accelX, float* accelY, float* accelZ)
 			MPU6886_getAccelData(accelX, accelY, accelZ);
 			break;
 		case IMU_SH200Q:
+			SH200Q_getAccelData(accelX, accelY, accelZ);
+			break;
 		default:;
 	}
 }
@@ -63,9 +71,11 @@ void IMU_getAhrsData(float* pitch, float* roll, float* yaw)
 {
 	switch(IMU_TYPE){
 		case IMU_MPU6886:
-			IMU_getAhrsData(pitch, roll, yaw);
+			MPU6886_getAhrsData(pitch, roll, yaw);
 			break;
 		case IMU_SH200Q:
+			SH200Q_getAhrsData(pitch, roll, yaw);
+			break;
 		default:;
 	}
 }

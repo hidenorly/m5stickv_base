@@ -1,5 +1,5 @@
 /* 
- Copyright (C) 2019 hidenorly
+ Copyright (C) 2019, 2020 hidenorly
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 #include <bsp.h>
 #include "board_setup.h"
 #include "boards.h"
-#include <sysctl.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,8 +25,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+#include "sysctl.h"
+#include "plic.h"
+#include "timer.h"
 #include "fpioa.h"
 #include "gpiohs.h"
+#include "uarths.h"
+#include "rtc.h"
+#include "w25qxx.h"
 #include "pal_gpio.h"
 #include "pal_led.h"
 
@@ -52,10 +57,40 @@ void setup_buttons(void)
     pinMode(BUTTON_B, INPUT_PULLUP);
 }
 
+bool flash_init(uint8_t* manuf_id, uint8_t* device_id)
+{
+    w25qxx_init_dma(3, 0);
+    w25qxx_enable_quad_mode_dma();
+    w25qxx_read_id_dma(manuf_id, device_id);
+    return true;
+}
+
+
 void board_setup(void)
 {
-    sysctl_pll_set_freq(SYSCTL_PLL0, 800000000);
+    sysctl_pll_set_freq(SYSCTL_PLL0, FREQ_PLL0_DEFAULT);
+    sysctl_pll_set_freq(SYSCTL_PLL1, FREQ_PLL1_DEFAULT);
+    sysctl_pll_set_freq(SYSCTL_PLL2, FREQ_PLL2_DEFAULT);
+    sysctl_cpu_set_freq(FREQ_CPU_MAX);//FREQ_CPU_DEFAULT);
+    sysctl_clock_set_threshold(SYSCTL_THRESHOLD_AI, 1);
+    sysctl_clock_enable(SYSCTL_CLOCK_AI);
+    sysctl_set_power_mode(SYSCTL_POWER_BANK6, SYSCTL_POWER_V18);
+    sysctl_set_power_mode(SYSCTL_POWER_BANK7, SYSCTL_POWER_V18);
+
+//    fpioa_set_function(4, FUNC_UARTHS_RX);
+//    fpioa_set_function(5, FUNC_UARTHS_TX);
+    dmac_init();
+    plic_init();
+    sysctl_enable_irq();
+    rtc_init();
+    rtc_timer_set(2020,1, 1,0, 0, 0);
+    uint8_t manuf_id, device_id;
+    flash_init(&manuf_id, &device_id);
+
     boards_init();
+
+    uarths_init();
+    uarths_config(115200, 1);
 
     setup_buttons();
     setup_lcd(BLACK, DIR_YX_LRUD);

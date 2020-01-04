@@ -1,4 +1,4 @@
-/* Copyright 2019 hidenorly
+/* Copyright 2019, 2020 hidenorly
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,8 @@ void task_func1(void* arg)
     }
 }
 
+#include "boards.h"
+
 
 void task_func2(void* arg)
 {
@@ -92,9 +94,15 @@ void task_func2(void* arg)
         IMU_getGyroData(&gyroX, &gyroY, &gyroZ);
         IMU_getAhrsData(&pitch, &roll, &yaw);
 
-        printf("a:%5.2f,%5.2f,%5.2f\r\n", accX, accY, accZ);
-        printf("g:%6.2f,%6.2f,%6.2f\r\n", gyroX, gyroY, gyroZ);
-        printf("h:%5.2f,%5.2f,%5.2f\r\n", pitch, roll, yaw);
+        lcd_clear(BLACK);
+        char buf[64];
+        snprintf(buf, sizeof(buf), "a:%6.2f,%6.2f,%6.2f", accX, accY, accZ);
+        lcd_draw_string(0,0, buf, WHITE); printf("%s\r\n",buf);
+        snprintf(buf, sizeof(buf), "g:%6.2f,%6.2f,%6.2f", gyroX, gyroY, gyroZ);
+        lcd_draw_string(0,20, buf, WHITE); printf("%s\r\n",buf);
+        snprintf(buf, sizeof(buf), "h:%6.2f,%6.2f,%6.2f", pitch, roll, yaw);
+        lcd_draw_string(0,40, buf, WHITE); printf("%s\r\n",buf);
+
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
@@ -113,8 +121,8 @@ int main(void)
     // LED
     rgbw_led_init();
 
-    xTaskCreateAtProcessor(0, task_func1, "1", 256, NULL, tskIDLE_PRIORITY+1, NULL );
-    xTaskCreateAtProcessor(1, task_func2, "2", 256, NULL, tskIDLE_PRIORITY+1, NULL );
+    xTaskCreateAtProcessor(0, task_func1, "1", 512, NULL, tskIDLE_PRIORITY+1, NULL );
+    xTaskCreateAtProcessor(0, task_func2, "2", 512, NULL, tskIDLE_PRIORITY+1, NULL );
 
     core_task_scheduler_enable(NULL); // infinite loop
 
