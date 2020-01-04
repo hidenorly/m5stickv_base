@@ -30,6 +30,7 @@ extern "C" {
 #include "timer.h"
 #include "fpioa.h"
 #include "gpiohs.h"
+#include "uart.h"
 #include "uarths.h"
 #include "rtc.h"
 #include "w25qxx.h"
@@ -77,8 +78,11 @@ void board_setup(void)
     sysctl_set_power_mode(SYSCTL_POWER_BANK6, SYSCTL_POWER_V18);
     sysctl_set_power_mode(SYSCTL_POWER_BANK7, SYSCTL_POWER_V18);
 
-//    fpioa_set_function(4, FUNC_UARTHS_RX);
-//    fpioa_set_function(5, FUNC_UARTHS_TX);
+    fpioa_set_function(4, FUNC_UARTHS_RX);
+    fpioa_set_function(5, FUNC_UARTHS_TX);
+    uarths_init();
+    uarths_config(115200, 1);
+
     dmac_init();
     plic_init();
     sysctl_enable_irq();
@@ -88,9 +92,6 @@ void board_setup(void)
     flash_init(&manuf_id, &device_id);
 
     boards_init();
-
-    uarths_init();
-    uarths_config(115200, 1);
 
     setup_buttons();
     setup_lcd(BLACK, DIR_YX_LRUD);

@@ -28,6 +28,7 @@ extern "C" {
 #include "pal_gpio.h"
 #include "pal_led.h"
 #include "IMU.h"
+#include "uarths.h"
 
 void hello_core(void)
 {
@@ -123,6 +124,9 @@ int main(void)
 
     xTaskCreateAtProcessor(0, task_func1, "1", 512, NULL, tskIDLE_PRIORITY+1, NULL );
     xTaskCreateAtProcessor(0, task_func2, "2", 512, NULL, tskIDLE_PRIORITY+1, NULL );
+
+    sys_register_getchar(uarths_getchar);
+    sys_register_putchar(uarths_putchar);
 
     core_task_scheduler_enable(NULL); // infinite loop
 
