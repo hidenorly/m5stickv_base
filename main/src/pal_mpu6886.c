@@ -38,7 +38,11 @@ int MPU6886_i2c_send_data(uint8_t cmd, size_t send_buf_len, const uint8_t *send_
 	memcpy(buf+1, send_buf, send_buf_len);
 	ret = maix_i2c_send_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, buf, send_buf_len+1, 20);
 #if ENABLE_MPU6886_I2C_DEBUG
-	printf("cmd:%x data:%x ret:%d\r\n", cmd, (buf[1]<<7) | buf[2], ret);
+	printf("i2c_data write %x:", cmd);
+	for(int i=1; i<send_buf_len+1; i++){
+		printf("%x ", buf[i]);
+	}
+	printf("(ret:%d)\r\n", ret);
 #endif
 	return ret;
 }
@@ -51,7 +55,7 @@ int MPU6886_i2c_send_byte(uint8_t cmd, const uint8_t sendData)
 	buf[1] = sendData;
 	ret = maix_i2c_send_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, buf, 2, 20);
 #if ENABLE_MPU6886_I2C_DEBUG
-	printf("cmd:%x data:%x ret:%d\r\n", cmd, buf[1], ret);
+	printf("i2c_data write %x:=%x (ret:%d)\r\n", cmd, buf[1], ret);
 #endif
 	return ret;
 }
@@ -59,32 +63,26 @@ int MPU6886_i2c_send_byte(uint8_t cmd, const uint8_t sendData)
 int MPU6886_i2c_recv_data(uint8_t cmd, size_t receive_buf_len, uint8_t *receive_buf)
 {
 	int ret = 0;
-	uint8_t buf[receive_buf_len+1];
-	memset(buf, 0, receive_buf_len+1);
-	buf[0] = cmd;
-	ret = maix_i2c_recv_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, NULL, 0, buf, receive_buf_len+1, 20);
+	ret = maix_i2c_recv_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, &cmd, 1, receive_buf, receive_buf_len, 20);
 #if ENABLE_MPU6886_I2C_DEBUG
 	printf("i2c_data read %x:", cmd);
-	for(int i=0; i<receive_buf_len+1; i++){
-		printf("%x ", buf[i]);
+	for(int i=0; i<receive_buf_len; i++){
+		printf("%x ", receive_buf[i]);
 	}
 	printf("(ret:%d)\r\n", ret);
 #endif
-	memcpy(receive_buf, buf+1, receive_buf_len);
 	return ret;
 }
 
 uint8_t MPU6886_i2c_recv_byte(uint8_t cmd)
 {
-	uint8_t buf[2];
-	buf[0] = cmd;
-	buf[1] = 0;
-	int ret = maix_i2c_recv_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, NULL, 0, buf, 2, 20); //MPU6886_i2c_recv_data(cmd, 1, buf);
+	uint8_t buf;
+	int ret = maix_i2c_recv_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, &cmd, 1, &buf, 1, 20);
 #if ENABLE_MPU6886_I2C_DEBUG
-	printf("i2c_byte read %x:%x %x (ret:%d)\r\n", cmd, buf[0], buf[1], ret);
+	printf("i2c_byte read %x:%x (ret:%d)\r\n", cmd, buf, ret);
 #endif
 
-	return ret ? 0 : buf[1];
+	return ret ? 0 : buf;
 }
 
 #include "sysctl.h"
@@ -92,7 +90,7 @@ uint8_t MPU6886_i2c_recv_byte(uint8_t cmd)
 
 int MPU6886_Init(void)
 {
-//    sysctl_set_power_mode(SYSCTL_POWER_BANK3,SYSCTL_POWER_V33);
+    sysctl_set_power_mode(SYSCTL_POWER_BANK4,SYSCTL_POWER_V33);
 
 	// setup GPIOs for I2C & the I2C
 	fpioa_set_function(MPU6886_I2C_PIN_SCL, FUNC_I2C0_SCLK);
@@ -164,7 +162,7 @@ int MPU6886_Init(void)
 void MPU6886_getGyroData(float* gyroX, float* gyroY, float* gyroZ)
 {
 	uint8_t buf[6] = {0,0,0,0,0,0};
-	MPU6886_i2c_recv_data(MPU6886_ACCEL_XOUT_H, 6, buf);
+	MPU6886_i2c_recv_data(MPU6886_GYRO_XOUT_H, 6, buf);
 
 	*gyroX=(float)(((int16_t)buf[0]<<8) | buf[1]) * g_gyroK;
 	*gyroY=(float)(((int16_t)buf[2]<<8) | buf[3]) * g_gyroK;
@@ -174,7 +172,7 @@ void MPU6886_getGyroData(float* gyroX, float* gyroY, float* gyroZ)
 void MPU6886_getAccelData(float* accelX, float* accelY, float* accelZ)
 {
 	uint8_t buf[6] = {0,0,0,0,0,0};
-	MPU6886_i2c_recv_data(MPU6886_GYRO_XOUT_H, 6, buf);
+	MPU6886_i2c_recv_data(MPU6886_ACCEL_XOUT_H, 6, buf);
 
 	*accelX=(float)(((int16_t)buf[0]<<8) | buf[1]) * g_accelK;
 	*accelY=(float)(((int16_t)buf[2]<<8) | buf[3]) * g_accelK;

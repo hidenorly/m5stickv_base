@@ -70,9 +70,6 @@ void task_func1(void* arg)
     }
 }
 
-#include "boards.h"
-
-
 void task_func2(void* arg)
 {
     float accX = 0.0f;
