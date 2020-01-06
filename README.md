@@ -13,6 +13,8 @@ Current supported features:
 * LED (with Software PWM)
 * Debug UART
 * LCD
+* Sensor support (MPU6886 and SH200Q)
+  (My M5StickV doesn't have IMU then please help to confirm about this functionality.)
 
 # Get dependent modules
 

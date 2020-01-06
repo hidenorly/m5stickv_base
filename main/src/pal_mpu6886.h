@@ -18,6 +18,7 @@
 #define __PAL_SENSOR_MPU6886_H__
 
 #include <bsp.h>
+#include "pal_i2c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,7 +30,7 @@ void MPU6886_getAccelData(float* accelX, float* accelY, float* accelZ);
 void MPU6886_getAhrsData(float* pitch, float* roll, float* yaw);
 
 // board config
-#define MPU6886_I2C_BUS		I2C_DEVICE_0    // iic0
+#define MPU6886_I2C_BUS		I2C_BUS_CHANNEL_0    // iic0
 #define MPU6886_I2C_PIN_INT	23
 #define MPU6886_I2C_PIN_SCL	28
 #define MPU6886_I2C_PIN_SDA	29

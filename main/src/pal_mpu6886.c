@@ -14,8 +14,6 @@
  limitations under the License.
 */
 
-#include "fpioa.h"
-
 #define MPU6886_IMPL
 #include "pal_mpu6886.h"
 #include "FreeRTOS.h"
@@ -25,64 +23,29 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include "sipeed_i2c.h"
+#include "pal_i2c.h"
 #include "type_defines.h"
 
 #define ENABLE_MPU6886_I2C_DEBUG 0
 
 int MPU6886_i2c_send_data(uint8_t cmd, size_t send_buf_len, const uint8_t *send_buf)
 {
-	int ret = 0;
-	uint8_t buf[send_buf_len+1];
-	buf[0] = cmd;
-	memcpy(buf+1, send_buf, send_buf_len);
-	ret = maix_i2c_send_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, buf, send_buf_len+1, 20);
-#if ENABLE_MPU6886_I2C_DEBUG
-	printf("i2c_data write %x:", cmd);
-	for(int i=1; i<send_buf_len+1; i++){
-		printf("%x ", buf[i]);
-	}
-	printf("(ret:%d)\r\n", ret);
-#endif
-	return ret;
+	return i2c_send_multiple_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, cmd, send_buf, send_buf_len);
 }
 
 int MPU6886_i2c_send_byte(uint8_t cmd, const uint8_t sendData)
 {
-	int ret;
-	uint8_t buf[2];
-	buf[0] = cmd;
-	buf[1] = sendData;
-	ret = maix_i2c_send_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, buf, 2, 20);
-#if ENABLE_MPU6886_I2C_DEBUG
-	printf("i2c_data write %x:=%x (ret:%d)\r\n", cmd, buf[1], ret);
-#endif
-	return ret;
+	return i2c_send_byte(MPU6886_I2C_BUS, MPU6886_I2C_SLA, cmd, sendData);
 }
 
 int MPU6886_i2c_recv_data(uint8_t cmd, size_t receive_buf_len, uint8_t *receive_buf)
 {
-	int ret = 0;
-	ret = maix_i2c_recv_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, &cmd, 1, receive_buf, receive_buf_len, 20);
-#if ENABLE_MPU6886_I2C_DEBUG
-	printf("i2c_data read %x:", cmd);
-	for(int i=0; i<receive_buf_len; i++){
-		printf("%x ", receive_buf[i]);
-	}
-	printf("(ret:%d)\r\n", ret);
-#endif
-	return ret;
+	return i2c_recv_multiple_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, cmd, receive_buf, receive_buf_len);
 }
 
 uint8_t MPU6886_i2c_recv_byte(uint8_t cmd)
 {
-	uint8_t buf;
-	int ret = maix_i2c_recv_data(MPU6886_I2C_BUS, MPU6886_I2C_SLA, &cmd, 1, &buf, 1, 20);
-#if ENABLE_MPU6886_I2C_DEBUG
-	printf("i2c_byte read %x:%x (ret:%d)\r\n", cmd, buf, ret);
-#endif
-
-	return ret ? 0 : buf;
+	return i2c_recv_byte(MPU6886_I2C_BUS, MPU6886_I2C_SLA, cmd);
 }
 
 #include "sysctl.h"
@@ -93,13 +56,11 @@ int MPU6886_Init(void)
     sysctl_set_power_mode(SYSCTL_POWER_BANK4,SYSCTL_POWER_V33);
 
 	// setup GPIOs for I2C & the I2C
-	fpioa_set_function(MPU6886_I2C_PIN_SCL, FUNC_I2C0_SCLK);
-	fpioa_set_function(MPU6886_I2C_PIN_SDA, FUNC_I2C0_SDA);
-	maix_i2c_init(MPU6886_I2C_BUS, 7, 400000);
+	i2c_initialize(MPU6886_I2C_BUS, MPU6886_I2C_PIN_SDA, MPU6886_I2C_PIN_SCL, 400000);
 	delay(1);
 
 	if( MPU6886_i2c_recv_byte(MPU6886_WHOAMI) != MPU6886_WHOAMI_VALUE ){
-		maix_i2c_deinit(MPU6886_I2C_BUS);
+		i2c_finalize(MPU6886_I2C_BUS);
 		printf("This device doesn't have MPU6886.\r\n");
 		// WHO AM I's register (117) will return 0x19. Otherwise, it's not MPU6886.
 		return -1;

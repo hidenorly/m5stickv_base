@@ -18,6 +18,7 @@
 #define __PAL_SENSOR_SH200Q_H__
 
 #include <bsp.h>
+#include "pal_i2c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,7 +31,7 @@ void SH200Q_getAccelData(float* accelX, float* accelY, float* accelZ);
 void SH200Q_getAhrsData(float* pitch, float* roll, float* yaw);
 
 // board config
-#define SH200Q_I2C_BUS		I2C_DEVICE_0    // iic0
+#define SH200Q_I2C_BUS		I2C_BUS_CHANNEL_0    // iic0
 #define SH200Q_I2C_PIN_SCL	28
 #define SH200Q_I2C_PIN_SDA	29
 #define SH200Q_I2C_SLA		0x6C
