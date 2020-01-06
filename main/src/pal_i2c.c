@@ -1,5 +1,5 @@
 /* 
- Copyright (C) 2019 hidenorly
+ Copyright (C) 2020 hidenorly
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ extern "C" {
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define SH200Q_IMPL
 #include "pal_i2c.h"
 
 #include "sipeed_i2c.h"
