@@ -25,8 +25,9 @@ extern "C" {
 
 #include "pal_i2c.h"
 #include "type_defines.h"
+#include "base.h"
 
-#define ENABLE_MPU6886_I2C_DEBUG 0
+#define ENABLE_SH200Q_I2C_DEBUG 0
 
 
 int SH200Q_i2c_send_data(uint8_t cmd, size_t send_buf_len, const uint8_t *send_buf)
@@ -56,11 +57,12 @@ int SH200Q_Init(void)
 	i2c_initialize(SH200Q_I2C_BUS, SH200Q_I2C_PIN_SDA, SH200Q_I2C_PIN_SCL, 400000);
 
 	if( SH200Q_i2c_recv_byte(SH200Q_CHIPID) != SH200Q_CHIPID_VALUE ){
-		printf("This device doesn't have SH200Q.\r\n");
+		DEBUG_PRINTF("This device doesn't have SH200Q.\r\n");
 		// Chip ID's register will return 0x18. Otherwise, it's not SH200Q.
 		i2c_finalize(SH200Q_I2C_BUS);
 		return -1;
 	}
+	DEBUG_PRINTLN("SH200Q detected");
 
 	delay(1);
 

@@ -33,8 +33,8 @@ extern "C" {
 void i2c_initialize(uint8_t i2cBusChannel, uint8_t pinSDA, uint8_t pinSCL, uint32_t clock)
 {
 	// setup GPIOs for I2C & the I2C
-	fpioa_set_function(i2cBusChannel, FUNC_I2C0_SCLK + i2cBusChannel * 2);
-	fpioa_set_function(i2cBusChannel, FUNC_I2C0_SDA + i2cBusChannel * 2);
+	fpioa_set_function(pinSCL, FUNC_I2C0_SCLK + i2cBusChannel * 2);
+	fpioa_set_function(pinSDA, FUNC_I2C0_SDA + i2cBusChannel * 2);
 
 	maix_i2c_init(i2cBusChannel, 7, clock);
 }
@@ -63,10 +63,7 @@ int i2c_send_multiple_data(uint8_t i2cBusChannel, int8_t slaveAddress, uint8_t c
 
 int i2c_send_byte(uint8_t i2cBusChannel, uint8_t slaveAddress, uint8_t cmd, const uint8_t sendData)
 {
-	uint8_t buf[2];
-	buf[0] = cmd;
-	buf[1] = sendData;
-	return i2c_send_multiple_data(i2cBusChannel, slaveAddress, cmd, buf, 2);
+	return i2c_send_multiple_data(i2cBusChannel, slaveAddress, cmd, &sendData, 1);
 }
 
 int i2c_recv_multiple_data(uint8_t i2cBusChannel, uint8_t slaveAddress, uint8_t cmd, uint8_t *receive_buf, size_t receive_buf_len)
@@ -85,7 +82,7 @@ int i2c_recv_multiple_data(uint8_t i2cBusChannel, uint8_t slaveAddress, uint8_t 
 
 uint8_t i2c_recv_byte(uint8_t i2cBusChannel, uint8_t slaveAddress, uint8_t cmd)
 {
-	uint8_t buf;
+	uint8_t buf = 0;
 	int ret = i2c_recv_multiple_data(i2cBusChannel, slaveAddress, cmd, &buf, 1);
 
 	return ret ? 0 : buf;

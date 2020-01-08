@@ -14,7 +14,7 @@ Current supported features:
 * Debug UART
 * LCD
 * Sensor support (MPU6886 and SH200Q)
-  (My M5StickV doesn't have IMU then please help to confirm about this functionality.)
+  (My M5StickV has MPU6886 as IMU then please help to confirm about this functionality.)
 
 # Get dependent modules
 

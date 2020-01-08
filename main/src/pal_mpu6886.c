@@ -25,8 +25,11 @@ extern "C" {
 
 #include "pal_i2c.h"
 #include "type_defines.h"
+#include "base.h"
 
 #define ENABLE_MPU6886_I2C_DEBUG 0
+
+
 
 int MPU6886_i2c_send_data(uint8_t cmd, size_t send_buf_len, const uint8_t *send_buf)
 {
@@ -48,23 +51,20 @@ uint8_t MPU6886_i2c_recv_byte(uint8_t cmd)
 	return i2c_recv_byte(MPU6886_I2C_BUS, MPU6886_I2C_SLA, cmd);
 }
 
-#include "sysctl.h"
-
 
 int MPU6886_Init(void)
 {
-    sysctl_set_power_mode(SYSCTL_POWER_BANK4,SYSCTL_POWER_V33);
-
 	// setup GPIOs for I2C & the I2C
 	i2c_initialize(MPU6886_I2C_BUS, MPU6886_I2C_PIN_SDA, MPU6886_I2C_PIN_SCL, 400000);
 	delay(1);
 
 	if( MPU6886_i2c_recv_byte(MPU6886_WHOAMI) != MPU6886_WHOAMI_VALUE ){
 		i2c_finalize(MPU6886_I2C_BUS);
-		printf("This device doesn't have MPU6886.\r\n");
+		DEBUG_PRINT("This device doesn't have MPU6886.\r\n");
 		// WHO AM I's register (117) will return 0x19. Otherwise, it's not MPU6886.
 		return -1;
 	}
+	DEBUG_PRINTLN("MPU6886 detected");
 	delay(1);
 
 	// Device reset to default
